@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
+use App\Repositories\Contracts\OrdersInterface;
 use Illuminate\Http\Request;
 
 class OrdersController extends Controller
 {
+    protected $orders;
+
+    public function __construct(OrdersInterface $orders)
+    {
+        $this->orders = $orders;
+    }
+
+
     public function upload(Request $request)
     {
-        $file = $request->file('order');
-        $path = sprintf('order/%s', $request->get('email'));
-        $name = sprintf('%s.csv', Carbon::now()->timestamp);
-        $file->storeAs($path, $name);
+        return $this->orders->uploadCsv($request);
     }
 }
