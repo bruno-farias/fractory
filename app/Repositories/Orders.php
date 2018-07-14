@@ -15,7 +15,7 @@ class Orders implements OrdersInterface
     {
         $file = $request->file('order');
         $path = sprintf('order/%s', $request->get('email'));
-        $name = sprintf('%s.csv', Carbon::now()->timestamp);
-        return $file->storeAs($path, $name);
+
+        return $file->storeAs($path, 'pre_order.csv');
     }
 }

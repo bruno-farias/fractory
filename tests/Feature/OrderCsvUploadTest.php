@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use Carbon\Carbon;
+use GuzzleHttp\Client;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -11,21 +11,14 @@ class OrderCsvUploadTest extends TestCase
 {
     public function testOrderCsvUpload()
     {
-        Storage::fake('orders');
+        $file = new UploadedFile(public_path('data.csv'), 'data.csv');
 
-        $this->json('POST', 'api/order/upload', [
-            'order' => UploadedFile::fake()->create('order.csv', 1024),
+        $this->call('POST', 'api/order/upload', [
             'email' => 'test@test.com'
+        ], [], [
+            'order' => $file,
         ]);
 
-        $path = sprintf('order/test@test.com/%s.csv', Carbon::now()->timestamp);
-
-        Storage::disk()->assertExists($path);
-
-        Storage::disk()->assertMissing('order/test@test.com/broken.csv');
-
-        Storage::disk()->delete($path);
-
-        Storage::disk()->assertMissing($path);
+        $this->assertTrue(Storage::exists('order/test@test.com/pre_order.csv'));
     }
 }
