@@ -14,9 +14,23 @@ class OrdersController extends Controller
         $this->orders = $orders;
     }
 
-
     public function upload(Request $request)
     {
-        return $this->orders->uploadCsv($request);
+        $path = $this->orders->uploadCsv($request);
+        return $this->orders->createPreOrder($request->get('email'), $path);
+    }
+
+    public function check(string $email)
+    {
+        return response()->json([
+            'exists' => $this->orders->checkPreviousPreOrder($email)
+        ]);
+    }
+
+    public function getPreviousOrder(int $requester)
+    {
+        return response()->json([
+            'order' => $this->orders->getExistentPreOrder($requester)
+        ]);
     }
 }

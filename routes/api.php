@@ -18,7 +18,19 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::post('order/upload', [
-    'as' => 'api.order.upload',
-    'uses' => 'OrdersController@upload'
-]);
+Route::prefix('order')->group(function () {
+    Route::post('upload', [
+        'as' => 'api.order.upload',
+        'uses' => 'OrdersController@upload'
+    ]);
+
+    Route::post('check/{email}', [
+        'as' => 'api.order.check',
+        'uses' => 'OrdersController@check'
+    ]);
+
+    Route::post('previous/{id}', [
+        'as' => 'api.order.previous',
+        'uses' => 'OrdersController@getPreviousOrder'
+    ]);
+});
