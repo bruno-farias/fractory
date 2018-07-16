@@ -27,12 +27,19 @@ class Orders implements OrdersInterface
         $requester = Requester::create(['email' => $email]);
         $path = "storage/order/${email}/pre_order.csv";
 
+        $requiredFields = ["Name","QTY","Thickness","Material","Bending","Threading"];
+
         $csv = Reader::createFromPath(public_path($path), 'r');
         $csv->setHeaderOffset(0);
         $header = $csv->getHeader();
-        $records = $csv->getRecords();
 
-        foreach ($records as $record) {
+        if ($header !== $requiredFields) {
+            return response()->json([
+                'message' => 'The Columns don\'t match! example: <br>' . implode(', ', $requiredFields)
+            ], 423);
+        }
+
+        foreach ($csv->getRecords() as $record) {
             $preOrder = new PreOrder();
             $preOrder->requester = $requester->id;
             $preOrder->name = Helpers::setNullIfEmpty($record[$header[0]]);
