@@ -17,4 +17,6 @@ interface OrdersInterface
     public function checkPreviousPreOrder(string $email);
 
     public function getExistentPreOrder(int $requester);
+
+    public function updateItem(Request $request);
 }

@@ -44,17 +44,11 @@ class Orders implements OrdersInterface
             $preOrder->save();
         }
 
-        $validateFields = $this->validatePreOrder($requester->id);
-
-        if (count($validateFields) > 0) {
-            return response()->json([
-                'error' => true,
-                'fields' => $validateFields
-            ]);
-        }
+        $fieldsWithErrors = $this->validatePreOrder($requester->id);
 
         return response()->json([
-            'error' => false
+            'errors' => $fieldsWithErrors,
+            'fields' => PreOrder::whereRequester($requester->id)->get()
         ]);
     }
 
@@ -100,6 +94,12 @@ class Orders implements OrdersInterface
     {
         // Not suits for real world
         return PreOrder::whereRequester($requester)->get();
+    }
+
+    public function updateItem(Request $request)
+    {
+        return PreOrder::where('id', $request->get('id'))
+            ->update([$request->get('field') => $request->get('value')]);
     }
 
 

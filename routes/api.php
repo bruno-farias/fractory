@@ -33,4 +33,9 @@ Route::prefix('order')->group(function () {
         'as' => 'api.order.previous',
         'uses' => 'OrdersController@getPreviousOrder'
     ]);
+
+    Route::post('update/item', [
+        'as' => 'api.order.update.item',
+        'uses' => 'OrdersController@updateItem'
+    ]);
 });
